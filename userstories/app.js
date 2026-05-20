@@ -19,7 +19,21 @@ function getExtension(name) {
 function showStatus(text, kind) {
   statusEl.hidden = false;
   statusEl.className = 'status ' + (kind || '');
-  statusEl.textContent = text;
+  statusEl.textContent = '';
+  if (kind === 'working') {
+    const spinner = document.createElement('span');
+    spinner.className = 'spinner';
+    spinner.setAttribute('aria-hidden', 'true');
+    statusEl.appendChild(spinner);
+  }
+  const label = document.createElement('span');
+  label.textContent = text;
+  statusEl.appendChild(label);
+}
+
+function setBusy(busy) {
+  dropzone.classList.toggle('is-busy', busy);
+  dropzone.setAttribute('aria-busy', busy ? 'true' : 'false');
 }
 
 function hideResults() {
@@ -76,6 +90,16 @@ async function uploadFile(file) {
     showStatus('File is larger than 10 MB. Trim the document and try again.', 'error');
     return;
   }
+
+  setBusy(true);
+  try {
+    await runUpload(file, ext);
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function runUpload(file, ext) {
 
   let payloadFile = file;
   let payloadName = file.name;

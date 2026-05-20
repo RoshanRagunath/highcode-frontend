@@ -96,12 +96,34 @@ header h1 {
   background: var(--surface);
   box-shadow: var(--shadow);
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .status.working { border-left: 3px solid var(--accent); }
 .status.success { border-left: 3px solid var(--success); }
 .status.partial { border-left: 3px solid var(--warning); }
 .status.error { border-left: 3px solid var(--error); }
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-soft);
+  border-top-color: var(--accent);
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.dropzone.is-busy {
+  pointer-events: none;
+  opacity: 0.6;
+}
 
 .results {
   margin-top: 24px;
