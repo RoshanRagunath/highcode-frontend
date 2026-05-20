@@ -213,6 +213,23 @@
 
     .card:last-child { border-right: none; }
 
+    a.card {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+
+    a.card:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.04);
+    }
+
+    a.card:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: -1px;
+    }
+
     .card-icon {
       font-size: 1.4rem;
       margin-bottom: 1rem;
@@ -298,12 +315,11 @@
     </div>
 
     <div class="cards" id="tools">
-      <div class="card">
+      <a class="card" href="/userstories">
         <div class="card-icon">📄</div>
         <div class="card-title">User Story Generator</div>
         <div class="card-desc">Upload a document and get structured user stories generated automatically via AI.</div>
-        <span class="badge">Coming soon</span>
-      </div>
+      </a>
       <div class="card">
         <div class="card-icon">⚡</div>
         <div class="card-title">n8n Automations</div>
