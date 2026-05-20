@@ -83,7 +83,7 @@ async function uploadFile(file) {
   hideResults();
   const ext = getExtension(file.name);
   if (!ACCEPTED_EXTENSIONS.includes(ext)) {
-    showStatus('Unsupported file type. Use PDF, DOCX, or Markdown.', 'error');
+    showStatus('Unsupported file type. Use PDF, DOCX or Markdown.', 'error');
     return;
   }
   if (file.size > MAX_FILE_BYTES) {
@@ -143,7 +143,7 @@ async function runUpload(file, ext) {
   const issueCount = (payload.issues || []).length;
   const summaryText =
     status === 'success'
-      ? 'Created ' + issueCount + ' issue(s) — ' + (payload.epic_count || 0) + ' epic(s), ' + (payload.story_count || 0) + ' story(ies).'
+      ? 'Created ' + issueCount + ' issue(s): ' + (payload.epic_count || 0) + ' epic(s) and ' + (payload.story_count || 0) + ' story(ies).'
       : status === 'partial'
         ? 'Partial result: ' + (payload.error_message || 'see details below.')
         : 'Upload finished with errors: ' + (payload.error_message || 'unknown.');
@@ -168,9 +168,9 @@ async function loadHistory() {
 }
 
 function formatDate(iso) {
-  if (!iso) return '—';
+  if (!iso) return '-';
   const d = new Date(iso);
-  if (isNaN(d.getTime())) return '—';
+  if (isNaN(d.getTime())) return '-';
   const dd = String(d.getDate()).padStart(2, '0');
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   const yyyy = d.getFullYear();
@@ -184,6 +184,11 @@ function renderHistory(rows) {
     historyBody.innerHTML = '<p class="muted">No uploads yet.</p>';
     return;
   }
+  rows = rows.slice().sort((a, b) => {
+    const ta = new Date(a.timestamp || 0).getTime();
+    const tb = new Date(b.timestamp || 0).getTime();
+    return tb - ta;
+  });
   const table = document.createElement('table');
   table.innerHTML =
     '<thead><tr><th>When</th><th>File</th><th>Status</th><th>Counts</th><th>Issues</th></tr></thead>';
@@ -204,7 +209,7 @@ function renderHistory(rows) {
 
     tr.innerHTML =
       '<td>' + escapeHtml(when) + '</td>' +
-      '<td>' + escapeHtml(row.filename || '—') + ' <span class="muted">(' + escapeHtml(row.file_type || '') + ')</span></td>' +
+      '<td>' + escapeHtml(row.filename || '-') + ' <span class="muted">(' + escapeHtml(row.file_type || '') + ')</span></td>' +
       '<td><span class="status-pill ' + escapeHtml(row.status || '') + '">' + escapeHtml(row.status || '') + '</span></td>' +
       '<td>' + (row.epic_count || 0) + ' / ' + (row.story_count || 0) + '<div class="muted" style="font-size:11px">epics / stories</div></td>' +
       '<td><div class="keys-list">' + keysHtml + '</div></td>';
