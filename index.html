@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HighCode — AI-Powered Development</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --fg: #f0ede6;
+      --accent: #c8f542;
+      --muted: #444;
+      --card: #141414;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* Grid background */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200,245,66,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,245,66,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 3rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(10,10,10,0.8);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .nav-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+    }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.1s;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 9vw, 7rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      max-width: 14ch;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.25s;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--accent);
+      position: relative;
+      display: inline-block;
+    }
+
+    h1 em::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    .subtitle {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.95rem;
+      color: #888;
+      max-width: 42ch;
+      line-height: 1.7;
+      margin-bottom: 3.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.4s;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.55s;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0a;
+      border: none;
+      box-shadow: 0 0 30px rgba(200,245,66,0.2);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 40px rgba(200,245,66,0.35);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--muted);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--fg);
+    }
+
+    /* Cards */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      max-width: 900px;
+      width: 100%;
+      margin-top: 6rem;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.7s;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 2rem;
+      text-align: left;
+      border-right: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .card:last-child { border-right: none; }
+
+    .card-icon {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-desc {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    /* Coming soon badge */
+    .badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: rgba(200,245,66,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(200,245,66,0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+      margin-top: 0.75rem;
+      display: inline-block;
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 1.25rem 1.5rem; }
+      .cards { grid-template-columns: 1fr; }
+      .card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .card:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">High<span>Code</span></div>
+    <div class="nav-tag">highcode.nl</div>
+  </nav>
+
+  <main>
+    <div class="eyebrow">// AI-powered development tools</div>
+
+    <h1>Ship smarter.<br /><em>Build faster.</em></h1>
+
+    <p class="subtitle">
+      Tools that turn your documents and ideas into structured outputs —
+      user stories, specs, and more. Powered by n8n + AI.
+    </p>
+
+    <div class="cta-group">
+      <a href="#tools" class="btn btn-primary">
+        Explore tools →
+      </a>
+      <a href="https://roshanragunath.com" class="btn btn-secondary" target="_blank">
+        About me
+      </a>
+    </div>
+
+    <div class="cards" id="tools">
+      <div class="card">
+        <div class="card-icon">📄</div>
+        <div class="card-title">User Story Generator</div>
+        <div class="card-desc">Upload a document and get structured user stories generated automatically via AI.</div>
+        <span class="badge">Coming soon</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-title">n8n Automations</div>
+        <div class="card-desc">Workflow automation pipelines that connect your tools and eliminate manual work.</div>
+        <span class="badge">Coming soon</span>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧠</div>
+        <div class="card-title">AI Consulting</div>
+        <div class="card-desc">Strategy and implementation for teams looking to integrate AI into their workflow.</div>
+        <span class="badge">Coming soon</span>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 HighCode · highcode.nl · Built by Roshan Ragunath
+  </footer>
+
+</body>
+</html>
