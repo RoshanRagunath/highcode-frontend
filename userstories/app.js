@@ -143,6 +143,18 @@ async function loadHistory() {
   }
 }
 
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '—';
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const yyyy = d.getFullYear();
+  const hh = String(d.getHours()).padStart(2, '0');
+  const min = String(d.getMinutes()).padStart(2, '0');
+  return dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min;
+}
+
 function renderHistory(rows) {
   if (rows.length === 0) {
     historyBody.innerHTML = '<p class="muted">No uploads yet.</p>';
@@ -154,7 +166,7 @@ function renderHistory(rows) {
   const tbody = document.createElement('tbody');
   for (const row of rows) {
     const tr = document.createElement('tr');
-    const when = row.timestamp ? new Date(row.timestamp).toLocaleString() : '—';
+    const when = formatDate(row.timestamp);
     const issueLinks = (row.issues_detail || row.issue_keys || [])
       .map(it => {
         if (typeof it === 'string') return { key: it, url: 'https://fizor.atlassian.net/browse/' + it };
