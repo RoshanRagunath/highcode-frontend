@@ -3,75 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upload · Stories · HighCode</title>
+  <title>Submission · Stories · HighCode</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
   <nav>
-    <a href="/" class="logo">High<span>Code</span> <em>/ stories</em></a>
+    <a href="/highcode-frontend/highcode-stories/index.html" class="logo">High<span>Code</span> <em>Nº stories</em></a>
     <div class="nav-right">
-      <a href="/history" class="nav-link">History</a>
-      <span class="nav-tag">// upload</span>
+      <a href="/highcode-frontend/highcode-stories/history/index.html" class="nav-link">The archive →</a>
+      <span class="nav-tag">submission</span>
     </div>
   </nav>
 
   <main>
-    <header class="page-header">
-      <div class="eyebrow">// UPLOAD</div>
-      <h1>Drop a doc.<br />Get a backlog.</h1>
-      <p class="lede">
-        PDF, Word or Markdown. Stories land in the RN Jira project.
-      </p>
-    </header>
+    <div class="layout">
+      <div class="layout-main">
 
-    <section id="dropzone" class="dropzone" tabindex="0" aria-label="Drop file here">
-      <input id="fileInput" type="file" accept=".pdf,.docx,.md,.markdown" hidden />
-      <div class="dropzone-inner">
-        <div class="dropzone-icon" aria-hidden="true">
-          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="square">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
-        </div>
-        <p class="dropzone-text">
-          Drag a file here or
-          <button type="button" class="link-btn" id="browseBtn">browse</button>
-        </p>
-        <p class="dropzone-hint">PDF · DOCX · MARKDOWN — max 10 MB</p>
-      </div>
-    </section>
+        <header class="page-header">
+          <div class="eyebrow">
+            <span class="num">Nº 01</span><span class="sep">/</span>Submission
+          </div>
+          <h1>A <em>document</em>, please.</h1>
+          <p class="lede">
+            Drag a PDF, Word file, or Markdown specification onto the
+            plate below. An n8n and language model pipeline will read
+            it carefully and file the work in Jira.
+          </p>
+        </header>
 
-    <section id="status" class="status" hidden></section>
+        <section id="dropzone" class="dropzone" tabindex="0" aria-label="Drop file here">
+          <input id="fileInput" type="file" accept=".pdf,.docx,.md,.markdown" hidden />
+          <div class="dropzone-inner">
+            <p class="dropzone-text">
+              Place your document here, or
+              <button type="button" class="link-btn" id="browseBtn">browse</button>.
+            </p>
+            <p class="dropzone-hint">
+              PDF <span class="rule"></span> DOCX <span class="rule"></span> Markdown <span class="rule"></span> up to 10 MB
+            </p>
+          </div>
+        </section>
 
-    <section id="results" class="results" hidden>
-      <div class="results-header">
-        <span class="results-tag">// CREATED</span>
-        <h2>Issues</h2>
-      </div>
-      <div id="resultsBody"></div>
-    </section>
+        <section id="status" class="status" hidden></section>
 
-    <section class="recent">
-      <div class="recent-header">
-        <div>
-          <span class="recent-tag">// RECENT</span>
-          <h2>Latest uploads</h2>
-        </div>
-        <button type="button" class="link-btn" id="refreshBtn">Refresh →</button>
+        <section id="results" class="results" hidden>
+          <div class="results-header">
+            <span class="results-tag">Nº 02 / Filed</span>
+            <h2>Entered into the catalog</h2>
+          </div>
+          <div id="resultsBody"></div>
+        </section>
+
+        <section class="recent">
+          <div class="recent-header">
+            <div>
+              <span class="recent-tag">Nº 03 / Recent</span>
+              <h2>Latest submissions</h2>
+            </div>
+            <button type="button" class="link-btn" id="refreshBtn">Refresh ↻</button>
+          </div>
+          <div id="historyBody">
+            <p class="muted">Loading the register…</p>
+          </div>
+          <div class="recent-footer">
+            <a href="/highcode-frontend/highcode-stories/history/index.html" class="link-btn">See full archive →</a>
+          </div>
+        </section>
+
       </div>
-      <div id="historyBody">
-        <p class="muted">Loading history…</p>
-      </div>
-      <div class="recent-footer">
-        <a href="/history" class="link-btn">See full history →</a>
-      </div>
-    </section>
+
+      <aside class="rail" aria-label="Accepted formats">
+        <div class="rail-title">Accepted</div>
+        <div class="rail-row"><span class="k">Type</span><span class="v">PDF</span></div>
+        <div class="rail-row"><span class="k">Type</span><span class="v">DOCX</span></div>
+        <div class="rail-row"><span class="k">Type</span><span class="v">Markdown</span></div>
+        <div class="rail-row"><span class="k">Max</span><span class="v">10 MB</span></div>
+        <div class="rail-row"><span class="k">Output</span><span class="v accent">Jira RN</span></div>
+        <div class="rail-row"><span class="k">Status</span><span class="v dot accent">Online</span></div>
+      </aside>
+    </div>
   </main>
 
   <footer>
