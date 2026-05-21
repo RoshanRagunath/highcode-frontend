@@ -3,438 +3,435 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Stories — an instrument for translating documents into structured backlog. A HighCode tool." />
+  <meta name="description" content="Stories — turn documents into Jira user stories. A HighCode tool." />
   <title>Stories · HighCode</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --paper:       #F4EFE6;
-      --paper-deep:  #ECE5D6;
-      --paper-soft:  #F8F4EB;
-      --ink:         #14110E;
-      --ink-soft:    #45403A;
-      --mute:        #8A847A;
-      --rule:        rgba(20, 17, 14, 0.10);
-      --rule-strong: rgba(20, 17, 14, 0.20);
-      --accent:      #1E3A2F;
-      --accent-soft: rgba(30, 58, 47, 0.08);
-      --accent-hair: rgba(30, 58, 47, 0.35);
-
-      --max-w: 1080px;
-      --gutter: 64px;
-      --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+      --bg: #0a0a0a;
+      --fg: #f0ede6;
+      --accent: #c8f542;
+      --muted: #555;
+      --line: rgba(240, 237, 230, 0.08);
+      --line-strong: rgba(240, 237, 230, 0.18);
+      --card: #111111;
     }
 
     html, body {
-      background: var(--paper);
-      color: var(--ink);
-      font-family: 'Inter Tight', 'Helvetica Neue', sans-serif;
-      font-weight: 400;
-      line-height: 1.65;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Syne', sans-serif;
       overflow-x: hidden;
       min-height: 100%;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Paper grain */
+    /* Noise overlay */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      opacity: 0.035;
-      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none;
       z-index: 999;
+      opacity: 0.4;
     }
 
-    a { color: var(--accent); text-decoration: none; }
+    /* Grid background */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200, 245, 66, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200, 245, 66, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-    /* ---------- Navigation ---------- */
+    /* Navigation */
     nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 22px var(--gutter);
-      background: rgba(244, 239, 230, 0.92);
-      backdrop-filter: saturate(140%) blur(6px);
-      border-bottom: 1px solid var(--rule);
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid var(--line);
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(12px);
     }
 
     .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.375rem;
-      font-weight: 500;
-      letter-spacing: 0.005em;
-      color: var(--ink);
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--fg);
     }
-    .logo span { font-style: italic; color: var(--accent); }
+    .logo span { color: var(--accent); }
 
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 32px;
+      gap: 2rem;
     }
 
     .nav-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.625rem;
-      letter-spacing: 0.18em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--mute);
     }
 
     .nav-cta {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6875rem;
-      letter-spacing: 0.16em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--accent);
-      padding-bottom: 4px;
-      border-bottom: 1px solid var(--accent-hair);
-      transition: color 200ms var(--ease), border-color 200ms var(--ease);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(200, 245, 66, 0.3);
+      border-radius: 2px;
+      transition: background 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
     }
-    .nav-cta:hover { color: var(--ink); border-bottom-color: var(--ink); }
+    .nav-cta:hover {
+      background: rgba(200, 245, 66, 0.08);
+      border-color: var(--accent);
+    }
     .nav-cta:focus-visible {
-      outline: none;
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-      box-shadow: 0 1px 0 0 var(--accent);
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
 
-    /* ---------- Main canvas ---------- */
+    /* Main */
     main {
       position: relative;
       z-index: 1;
-      max-width: var(--max-w);
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 200px var(--gutter) 96px;
-      opacity: 0;
-      animation: gentleIn 900ms var(--ease) forwards 80ms;
+      padding: 8rem 2.5rem 6rem;
     }
-    @keyframes gentleIn { to { opacity: 1; } }
 
-    .section + .section { margin-top: 128px; padding-top: 128px; border-top: 1px solid var(--rule); }
-
-    .catalog-mark {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6875rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--mute);
-      padding-bottom: 16px;
-      margin-bottom: 40px;
-      border-bottom: 1px solid var(--rule);
-    }
-    .catalog-mark .num { color: var(--ink); }
-    .catalog-mark .sep { margin: 0 12px; color: var(--rule-strong); }
-
-    /* ---------- Hero ---------- */
+    /* Hero: asymmetric two-column */
     .hero {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 280px;
-      column-gap: 96px;
-      align-items: start;
+      gap: 4rem;
+      align-items: end;
+      padding-bottom: 5rem;
+      border-bottom: 1px solid var(--line);
     }
 
     .hero-main { min-width: 0; }
 
-    h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 500;
-      font-size: clamp(3.5rem, 11vw, 7.5rem);
-      line-height: 0.98;
-      letter-spacing: -0.022em;
-      color: var(--ink);
-      margin-bottom: 32px;
-      max-width: 11ch;
-    }
-    h1 em {
-      font-style: italic;
-      font-weight: 500;
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
       color: var(--accent);
-    }
-    h1 .period { color: var(--accent); }
-
-    .hero-lede {
-      font-family: 'Inter Tight', sans-serif;
-      font-size: 1.125rem;
-      line-height: 1.65;
-      color: var(--ink-soft);
-      max-width: 48ch;
-      margin-bottom: 56px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.1s;
     }
 
-    .hero-meta {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6875rem;
+    .eyebrow::before {
+      content: '// ';
+      color: var(--muted);
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8.5vw, 7.5rem);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+    }
+
+    h1 .arrow {
+      color: var(--accent);
+      font-style: normal;
+      display: inline-block;
+      white-space: nowrap;
+      transform: translateY(-0.05em);
+      margin-left: 0.1em;
+    }
+
+    h1 .underline {
+      position: relative;
+      display: inline-block;
+    }
+    h1 .underline::after {
+      content: '';
+      position: absolute;
+      bottom: 6px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent);
+      opacity: 0.35;
+    }
+
+    .lede {
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      color: #999;
+      max-width: 52ch;
+      line-height: 1.75;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.35s;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 1rem 2rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border-radius: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0a;
+      box-shadow: 0 8px 30px rgba(200, 245, 66, 0.18), 0 0 0 1px rgba(200, 245, 66, 0.5);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 14px 40px rgba(200, 245, 66, 0.3), 0 0 0 1px rgba(200, 245, 66, 0.7);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--line-strong);
+    }
+    .btn-secondary:hover {
+      border-color: var(--fg);
+    }
+
+    /* Spec sheet sidebar */
+    .spec-sheet {
+      border: 1px solid var(--line);
+      padding: 1.5rem;
+      background: var(--card);
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.6s;
+    }
+
+    .spec-sheet-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--mute);
-      margin-bottom: 16px;
+      color: var(--muted);
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 1rem;
     }
 
-    .hero-cta {
-      display: flex;
-      gap: 40px;
-      align-items: baseline;
-      flex-wrap: wrap;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8125rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .text-link {
-      color: var(--accent);
-      padding-bottom: 4px;
-      border-bottom: 1px solid var(--accent-hair);
-      transition: color 200ms var(--ease), border-color 200ms var(--ease);
-    }
-    .text-link:hover { color: var(--ink); border-bottom-color: var(--ink); }
-    .text-link:focus-visible {
-      outline: none;
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-      box-shadow: 0 1px 0 0 var(--accent);
-    }
-
-    .text-link.muted {
-      color: var(--ink-soft);
-      border-bottom-color: var(--rule-strong);
-    }
-    .text-link.muted:hover { color: var(--accent); border-bottom-color: var(--accent); }
-
-    /* ---------- Right rail "Catalog" ---------- */
-    .rail {
-      position: sticky;
-      top: 200px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.6875rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--mute);
-    }
-
-    .rail-title {
-      padding-bottom: 12px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--rule);
-      color: var(--ink);
-    }
-
-    .rail-row {
+    .spec-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      gap: 12px;
-      padding: 11px 0;
-      border-bottom: 1px solid var(--rule);
+      padding: 0.6rem 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      border-bottom: 1px solid var(--line);
     }
-    .rail-row:last-child { border-bottom: none; }
-    .rail-row .k { color: var(--mute); }
-    .rail-row .v {
-      color: var(--ink);
-      text-transform: none;
-      letter-spacing: 0.04em;
-      font-size: 0.75rem;
-      text-align: right;
+    .spec-row:last-child { border-bottom: none; }
+
+    .spec-key { color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.65rem; }
+    .spec-val { color: var(--fg); }
+    .spec-val.accent { color: var(--accent); }
+
+    /* Section: How it works */
+    .section {
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--line);
     }
-    .rail-row .v.accent { color: var(--accent); }
-    .rail-row .v.dot::before {
-      content: '●';
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .section-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
       color: var(--accent);
-      margin-right: 6px;
-      font-size: 0.55rem;
-      vertical-align: 2px;
     }
 
-    /* ---------- Section 2 — Three movements ---------- */
-    .process-header {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 280px;
-      column-gap: 96px;
-      align-items: end;
-      margin-bottom: 72px;
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
     }
 
-    .process-header h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 500;
-      font-style: italic;
-      font-size: clamp(2.25rem, 5vw, 3.75rem);
-      line-height: 1.0;
-      letter-spacing: -0.018em;
-      color: var(--ink);
-      max-width: 14ch;
-    }
-
-    .process-header .aside {
-      font-family: 'Inter Tight', sans-serif;
-      font-size: 0.9375rem;
-      line-height: 1.6;
-      color: var(--ink-soft);
-      text-transform: none;
-      letter-spacing: 0;
-    }
-
-    .plates {
+    .steps {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      border-top: 1px solid var(--rule-strong);
-      border-bottom: 1px solid var(--rule-strong);
+      gap: 1px;
+      border: 1px solid var(--line);
+      background: var(--line);
     }
 
-    .plate {
-      padding: 48px 32px 56px;
-      border-right: 1px solid var(--rule);
-      min-height: 320px;
-      display: flex;
-      flex-direction: column;
+    .step {
+      background: var(--bg);
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: background 0.3s ease;
     }
-    .plate:last-child { border-right: none; }
+    .step:hover { background: rgba(200, 245, 66, 0.02); }
 
-    .plate-roman {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 500;
-      font-size: 3rem;
-      line-height: 1;
-      color: var(--accent);
-      margin-bottom: 40px;
-    }
-
-    .plate-title {
-      font-family: 'Inter Tight', sans-serif;
-      font-weight: 500;
-      font-size: 1.125rem;
-      letter-spacing: -0.005em;
-      color: var(--ink);
-      margin-bottom: 12px;
-    }
-
-    .plate-body {
-      font-family: 'Inter Tight', sans-serif;
-      font-size: 0.9375rem;
-      line-height: 1.6;
-      color: var(--ink-soft);
-      margin-bottom: 28px;
-    }
-
-    .plate-meta {
-      margin-top: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.625rem;
+    .step-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
       letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--mute);
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .step-num strong {
+      color: var(--accent);
+      font-weight: 500;
     }
 
-    /* ---------- Section 3 — Begin ---------- */
-    .final {
-      text-align: center;
-      padding: 96px 0 48px;
+    .step-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
     }
+
+    .step-desc {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: #888;
+      line-height: 1.7;
+    }
+
+    /* Section: Final CTA */
+    .final {
+      padding: 6rem 0 4rem;
+      text-align: center;
+    }
+
+    .final-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .final-eyebrow::before { content: '// '; }
 
     .final h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 500;
-      font-style: italic;
-      font-size: clamp(2.75rem, 7vw, 4.5rem);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      color: var(--ink);
-      margin: 32px auto 40px;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1;
+      margin-bottom: 1.5rem;
       max-width: 22ch;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .final .text-link {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.875rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
+    .final p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      color: #888;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      max-width: 44ch;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    /* ---------- Footer ---------- */
+    /* Footer */
     footer {
       position: relative;
       z-index: 1;
-      max-width: var(--max-w);
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 32px var(--gutter) 56px;
-      border-top: 1px solid var(--rule);
+      padding: 2rem 2.5rem 3rem;
+      border-top: 1px solid var(--line);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.625rem;
-      letter-spacing: 0.18em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
       text-transform: uppercase;
-      color: var(--mute);
     }
 
     footer a {
-      color: var(--mute);
-      border-bottom: 1px solid transparent;
-      transition: color 200ms var(--ease), border-color 200ms var(--ease);
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s ease;
     }
-    footer a:hover { color: var(--accent); border-bottom-color: var(--accent-hair); }
+    footer a:hover { color: var(--accent); }
+    footer a:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
 
-    /* ---------- Reduced motion ---------- */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.001ms !important;
-      }
-      main { opacity: 1; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ---------- Mobile ---------- */
-    @media (max-width: 860px) {
-      :root { --gutter: 24px; }
-      nav { padding: 16px 24px; }
+    /* Responsive */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
       .nav-tag { display: none; }
-
-      main { padding: 140px 24px 64px; }
-
-      .section + .section { margin-top: 80px; padding-top: 80px; }
-
-      .hero,
-      .process-header {
+      main { padding: 6rem 1.5rem 4rem; }
+      .hero {
         grid-template-columns: 1fr;
-        row-gap: 48px;
+        gap: 2.5rem;
+        padding-bottom: 3rem;
       }
-      .rail { position: static; }
-
-      h1 { font-size: clamp(3rem, 14vw, 4.5rem); max-width: none; }
-      .hero-lede { font-size: 1rem; }
-
-      .plates { grid-template-columns: 1fr; }
-      .plate {
-        border-right: none;
-        border-bottom: 1px solid var(--rule);
-        padding: 32px 0 40px;
-        min-height: 0;
-      }
-      .plate:last-child { border-bottom: none; }
-
-      .final { padding: 64px 0 24px; }
-
+      .spec-sheet { max-width: 360px; }
+      .steps { grid-template-columns: 1fr; }
       footer {
-        padding: 24px;
+        padding: 1.5rem;
         flex-direction: column;
-        gap: 12px;
+        gap: 1rem;
         text-align: center;
       }
     }
@@ -445,105 +442,116 @@
   <nav>
     <a href="https://highcode.nl" class="logo">High<span>Code</span></a>
     <div class="nav-right">
-      <span class="nav-tag">stories.highcode.nl</span>
-      <a href="/app" class="nav-cta">Open the app →</a>
+      <div class="nav-tag">stories.highcode.nl</div>
+      <a href="/app" class="nav-cta">Open app →</a>
     </div>
   </nav>
 
   <main>
 
-    <!-- Nº 01 — Hero -->
-    <section class="section hero-section">
-      <div class="catalog-mark">
-        <span class="num">Nº 01</span><span class="sep">/</span>Document → Backlog
-      </div>
-
-      <div class="hero">
-        <div class="hero-main">
-          <h1>Stories<em>,</em> quietly<br><em>filed</em><span class="period">.</span></h1>
-          <p class="hero-lede">
-            An instrument for translating product documents into
-            structured backlog. Drop a specification; an n8n and
-            language model pipeline reads it carefully and writes
-            the Jira epics and stories on your behalf.
-          </p>
-          <div class="hero-meta">Begin</div>
-          <div class="hero-cta">
-            <a href="/app" class="text-link">Open the app →</a>
-            <a href="https://highcode.nl" class="text-link muted">← Back to HighCode</a>
-          </div>
-        </div>
-
-        <aside class="rail" aria-label="Catalog">
-          <div class="rail-title">Catalog</div>
-          <div class="rail-row"><span class="k">Formats</span><span class="v">PDF · DOCX · MD</span></div>
-          <div class="rail-row"><span class="k">Max size</span><span class="v">10 MB</span></div>
-          <div class="rail-row"><span class="k">Output</span><span class="v">Jira epics + stories</span></div>
-          <div class="rail-row"><span class="k">Pipeline</span><span class="v">n8n + LLM</span></div>
-          <div class="rail-row"><span class="k">Project</span><span class="v accent">RN · Jira</span></div>
-          <div class="rail-row"><span class="k">Status</span><span class="v dot accent">Online</span></div>
-        </aside>
-      </div>
-    </section>
-
-    <!-- Nº 02 — The process -->
-    <section class="section">
-      <div class="catalog-mark">
-        <span class="num">Nº 02</span><span class="sep">/</span>The process
-      </div>
-
-      <div class="process-header">
-        <h2>Three movements,<br>quietly executed.</h2>
-        <p class="aside">
-          The submission is read in the browser, parsed on a
-          private pipeline, and filed in the project of record.
-          No copy-paste, no manual transcription.
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-main">
+        <div class="eyebrow">Document → User stories → Jira</div>
+        <h1>
+          Stop writing<br />
+          <span class="underline">tickets</span>.<br />
+          Start shipping.<span class="arrow" aria-hidden="true"> →</span>
+        </h1>
+        <p class="lede">
+          Drop a PDF, Word doc or Markdown spec. An AI pipeline extracts
+          epics and stories and pushes them straight into the RN Jira
+          project.
         </p>
+        <div class="cta-group">
+          <a href="/app" class="btn btn-primary">
+            Open the app <span aria-hidden="true">→</span>
+          </a>
+          <a href="https://highcode.nl" class="btn btn-secondary">
+            ← Back to HighCode
+          </a>
+        </div>
       </div>
 
-      <div class="plates">
-        <article class="plate">
-          <div class="plate-roman">I.</div>
-          <h3 class="plate-title">Upload</h3>
-          <p class="plate-body">
-            Drop a PDF, Word file, or Markdown specification.
-            DOCX is converted to text in your browser before
-            it leaves the page.
+      <aside class="spec-sheet" aria-label="Specifications">
+        <div class="spec-sheet-title">// Spec sheet</div>
+        <div class="spec-row">
+          <span class="spec-key">Formats</span>
+          <span class="spec-val">PDF · DOCX · MD</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Max size</span>
+          <span class="spec-val">10 MB</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Output</span>
+          <span class="spec-val">Jira epics + stories</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Pipeline</span>
+          <span class="spec-val">n8n + LLM</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Project</span>
+          <span class="spec-val">RN · Jira</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Status</span>
+          <span class="spec-val accent">● Online</span>
+        </div>
+      </aside>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">01 / FLOW</span>
+        <h2 class="section-title">Three steps to a populated backlog.</h2>
+      </div>
+
+      <div class="steps">
+        <article class="step">
+          <div class="step-num"><strong>STEP_01</strong> / UPLOAD</div>
+          <h3 class="step-title">Drop a document.</h3>
+          <p class="step-desc">
+            PDF, Word or Markdown. Drag onto the dropzone or browse.
+            DOCX is converted to text in your browser before it leaves.
           </p>
-          <div class="plate-meta">Submission</div>
         </article>
 
-        <article class="plate">
-          <div class="plate-roman">II.</div>
-          <h3 class="plate-title">Extract</h3>
-          <p class="plate-body">
-            An n8n pipeline calls a language model to read the
-            document, identify epics and stories, and write
-            summaries worth shipping.
+        <article class="step">
+          <div class="step-num"><strong>STEP_02</strong> / EXTRACT</div>
+          <h3 class="step-title">AI does the parsing.</h3>
+          <p class="step-desc">
+            An n8n + LLM pipeline reads the doc, identifies epics
+            and stories, and writes summaries you would not be
+            ashamed to ship.
           </p>
-          <div class="plate-meta">Reading</div>
         </article>
 
-        <article class="plate">
-          <div class="plate-roman">III.</div>
-          <h3 class="plate-title">Ship</h3>
-          <p class="plate-body">
-            Issues land in the Jira RN project, linked back
-            to the source document. The archive records each
-            run with deep links to every issue created.
+        <article class="step">
+          <div class="step-num"><strong>STEP_03</strong> / SHIP</div>
+          <h3 class="step-title">Issues hit Jira.</h3>
+          <p class="step-desc">
+            Tickets land in the RN project, linked back to source.
+            History page tracks every run, with deep links to each
+            issue created.
           </p>
-          <div class="plate-meta">Filed</div>
         </article>
       </div>
     </section>
 
-    <!-- Nº 03 — Begin -->
-    <section class="section final">
-      <div class="catalog-mark" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0; display: inline-block;">
-        <span class="num">Nº 03</span><span class="sep">/</span>Begin
-      </div>
-      <h2>Drop your first document.</h2>
-      <a href="/app" class="text-link">Open the app →</a>
+    <!-- FINAL CTA -->
+    <section class="final">
+      <div class="final-eyebrow">Ready when you are</div>
+      <h2>Drop your first doc.</h2>
+      <p>
+        One click to the uploader. Drag in a PDF, Word doc or
+        Markdown spec and watch the tickets land.
+      </p>
+      <a href="/app" class="btn btn-primary">
+        Open the app <span aria-hidden="true">→</span>
+      </a>
     </section>
 
   </main>
