@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Stories — turn documents into Jira user stories. A HighCode tool." />
+  <title>Stories · HighCode</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --fg: #f0ede6;
+      --accent: #c8f542;
+      --muted: #555;
+      --line: rgba(240, 237, 230, 0.08);
+      --line-strong: rgba(240, 237, 230, 0.18);
+      --card: #111111;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+      min-height: 100%;
+    }
+
+    /* Noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* Grid background */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200, 245, 66, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200, 245, 66, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid var(--line);
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--fg);
+    }
+    .logo span { color: var(--accent); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(200, 245, 66, 0.3);
+      border-radius: 2px;
+      transition: background 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease;
+    }
+    .nav-cta:hover {
+      background: rgba(200, 245, 66, 0.08);
+      border-color: var(--accent);
+    }
+    .nav-cta:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Main */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 8rem 2.5rem 6rem;
+    }
+
+    /* Hero: asymmetric two-column */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 4rem;
+      align-items: end;
+      padding-bottom: 5rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-main { min-width: 0; }
+
+    .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.1s;
+    }
+
+    .eyebrow::before {
+      content: '// ';
+      color: var(--muted);
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8.5vw, 7.5rem);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.045em;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+    }
+
+    h1 .arrow {
+      color: var(--accent);
+      font-style: normal;
+      display: inline-block;
+      white-space: nowrap;
+      transform: translateY(-0.05em);
+      margin-left: 0.1em;
+    }
+
+    h1 .underline {
+      position: relative;
+      display: inline-block;
+    }
+    h1 .underline::after {
+      content: '';
+      position: absolute;
+      bottom: 6px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent);
+      opacity: 0.35;
+    }
+
+    .lede {
+      font-family: 'DM Mono', monospace;
+      font-size: 1rem;
+      color: #999;
+      max-width: 52ch;
+      line-height: 1.75;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.35s;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 1rem 2rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border-radius: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .btn:active { transform: translateY(0); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0a;
+      box-shadow: 0 8px 30px rgba(200, 245, 66, 0.18), 0 0 0 1px rgba(200, 245, 66, 0.5);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 14px 40px rgba(200, 245, 66, 0.3), 0 0 0 1px rgba(200, 245, 66, 0.7);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--line-strong);
+    }
+    .btn-secondary:hover {
+      border-color: var(--fg);
+    }
+
+    /* Spec sheet sidebar */
+    .spec-sheet {
+      border: 1px solid var(--line);
+      padding: 1.5rem;
+      background: var(--card);
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.6s;
+    }
+
+    .spec-sheet-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 1rem;
+    }
+
+    .spec-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.6rem 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .spec-row:last-child { border-bottom: none; }
+
+    .spec-key { color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.65rem; }
+    .spec-val { color: var(--fg); }
+    .spec-val.accent { color: var(--accent); }
+
+    /* Section: How it works */
+    .section {
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .section-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+
+    .step {
+      background: var(--bg);
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: background 0.3s ease;
+    }
+    .step:hover { background: rgba(200, 245, 66, 0.02); }
+
+    .step-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .step-num strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .step-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-desc {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: #888;
+      line-height: 1.7;
+    }
+
+    /* Section: Final CTA */
+    .final {
+      padding: 6rem 0 4rem;
+      text-align: center;
+    }
+
+    .final-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .final-eyebrow::before { content: '// '; }
+
+    .final h2 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+      max-width: 22ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .final p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      color: #888;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      max-width: 44ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem 2.5rem 3rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    footer a:hover { color: var(--accent); }
+    footer a:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-tag { display: none; }
+      main { padding: 6rem 1.5rem 4rem; }
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+        padding-bottom: 3rem;
+      }
+      .spec-sheet { max-width: 360px; }
+      .steps { grid-template-columns: 1fr; }
+      footer {
+        padding: 1.5rem;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="https://highcode.nl" class="logo">High<span>Code</span></a>
+    <div class="nav-right">
+      <div class="nav-tag">stories.highcode.nl</div>
+      <a href="/app" class="nav-cta">Open app →</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-main">
+        <div class="eyebrow">Document → User stories → Jira</div>
+        <h1>
+          Stop writing<br />
+          <span class="underline">tickets</span>.<br />
+          Start shipping.<span class="arrow" aria-hidden="true"> →</span>
+        </h1>
+        <p class="lede">
+          Drop a PDF, Word doc or Markdown spec. An AI pipeline extracts
+          epics and stories and pushes them straight into the RN Jira
+          project.
+        </p>
+        <div class="cta-group">
+          <a href="/app" class="btn btn-primary">
+            Open the app <span aria-hidden="true">→</span>
+          </a>
+          <a href="https://highcode.nl" class="btn btn-secondary">
+            ← Back to HighCode
+          </a>
+        </div>
+      </div>
+
+      <aside class="spec-sheet" aria-label="Specifications">
+        <div class="spec-sheet-title">// Spec sheet</div>
+        <div class="spec-row">
+          <span class="spec-key">Formats</span>
+          <span class="spec-val">PDF · DOCX · MD</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Max size</span>
+          <span class="spec-val">10 MB</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Output</span>
+          <span class="spec-val">Jira epics + stories</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Pipeline</span>
+          <span class="spec-val">n8n + LLM</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Project</span>
+          <span class="spec-val">RN · Jira</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Status</span>
+          <span class="spec-val accent">● Online</span>
+        </div>
+      </aside>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">01 / FLOW</span>
+        <h2 class="section-title">Three steps to a populated backlog.</h2>
+      </div>
+
+      <div class="steps">
+        <article class="step">
+          <div class="step-num"><strong>STEP_01</strong> / UPLOAD</div>
+          <h3 class="step-title">Drop a document.</h3>
+          <p class="step-desc">
+            PDF, Word or Markdown. Drag onto the dropzone or browse.
+            DOCX is converted to text in your browser before it leaves.
+          </p>
+        </article>
+
+        <article class="step">
+          <div class="step-num"><strong>STEP_02</strong> / EXTRACT</div>
+          <h3 class="step-title">AI does the parsing.</h3>
+          <p class="step-desc">
+            An n8n + LLM pipeline reads the doc, identifies epics
+            and stories, and writes summaries you would not be
+            ashamed to ship.
+          </p>
+        </article>
+
+        <article class="step">
+          <div class="step-num"><strong>STEP_03</strong> / SHIP</div>
+          <h3 class="step-title">Issues hit Jira.</h3>
+          <p class="step-desc">
+            Tickets land in the RN project, linked back to source.
+            History page tracks every run, with deep links to each
+            issue created.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final">
+      <div class="final-eyebrow">Ready when you are</div>
+      <h2>Drop your first doc.</h2>
+      <p>
+        One click to the uploader. Drag in a PDF, Word doc or
+        Markdown spec and watch the tickets land.
+      </p>
+      <a href="/app" class="btn btn-primary">
+        Open the app <span aria-hidden="true">→</span>
+      </a>
+    </section>
+
+  </main>
+
+  <footer>
+    <div>© <a href="https://highcode.nl">HighCode</a></div>
+    <div>v0.1 · Cloudflare Pages · n8n</div>
+  </footer>
+
+</body>
+</html>

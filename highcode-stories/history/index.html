@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>History · Stories · HighCode</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../app/styles.css" />
+
+  <style>
+    main { max-width: 1100px; }
+
+    .history-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      background: transparent;
+      border: 1px solid var(--line-strong);
+      border-radius: 2px;
+      padding: 0.4rem 0.75rem;
+      cursor: pointer;
+      transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .filter-btn:hover { color: var(--fg); border-color: var(--fg); }
+    .filter-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .filter-btn.active {
+      color: var(--accent);
+      border-color: rgba(200, 245, 66, 0.4);
+      background: rgba(200, 245, 66, 0.06);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      margin-bottom: 2.5rem;
+    }
+
+    .summary-cell {
+      background: var(--card);
+      padding: 1.25rem 1.25rem;
+    }
+
+    .summary-key {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      margin-bottom: 0.5rem;
+    }
+
+    .summary-val {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .summary-val.accent { color: var(--accent); }
+
+    @media (max-width: 700px) {
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="logo">High<span>Code</span> <em>/ stories</em></a>
+    <div class="nav-right">
+      <a href="/app" class="nav-link">Upload</a>
+      <span class="nav-tag">// history</span>
+    </div>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <div class="eyebrow">// HISTORY</div>
+      <h1>Every upload, every issue.</h1>
+      <p class="lede">
+        Full log of documents processed and Jira issues created.
+      </p>
+    </header>
+
+    <div class="summary-grid" id="summary">
+      <div class="summary-cell">
+        <div class="summary-key">Uploads</div>
+        <div class="summary-val" id="sumUploads">–</div>
+      </div>
+      <div class="summary-cell">
+        <div class="summary-key">Epics</div>
+        <div class="summary-val accent" id="sumEpics">–</div>
+      </div>
+      <div class="summary-cell">
+        <div class="summary-key">Stories</div>
+        <div class="summary-val accent" id="sumStories">–</div>
+      </div>
+      <div class="summary-cell">
+        <div class="summary-key">Last run</div>
+        <div class="summary-val" id="sumLast" style="font-size: 1rem; font-family: 'DM Mono', monospace; font-weight: 400;">–</div>
+      </div>
+    </div>
+
+    <div class="history-toolbar">
+      <div class="filter-group" role="group" aria-label="Filter by status">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="success">Success</button>
+        <button class="filter-btn" data-filter="partial">Partial</button>
+        <button class="filter-btn" data-filter="error">Error</button>
+      </div>
+      <button type="button" class="link-btn" id="refreshBtn">Refresh →</button>
+    </div>
+
+    <div id="historyBody">
+      <p class="muted">Loading history…</p>
+    </div>
+  </main>
+
+  <footer>
+    <div>© <a href="https://highcode.nl">HighCode</a></div>
+    <div>stories.highcode.nl</div>
+  </footer>
+
+  <script src="history.js"></script>
+</body>
+</html>
