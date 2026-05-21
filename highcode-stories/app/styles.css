@@ -599,14 +599,18 @@ td .muted {
 .status-pill.error::before   { background: var(--error); }
 .status-pill.unknown::before { background: var(--mute); }
 
-/* Keys list — emerald text links, comma-separated */
+/* Keys list — emerald text links, comma-separated.
+   .keys-list has font-size: 0 to swallow the join-space text nodes
+   that the JS inserts between adjacent <a> elements; each <a> and the
+   comma ::before re-establish their own font-size. */
 .keys-list {
-  display: inline;
+  font-size: 0;
   word-break: break-word;
+  line-height: 1.6;
 }
 .keys-list a {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8125rem;
+  font-size: 13px;
   letter-spacing: 0.04em;
   color: var(--accent);
   border-bottom: 1px solid var(--accent-hair);
@@ -614,13 +618,15 @@ td .muted {
 }
 .keys-list a:hover { color: var(--ink); border-bottom-color: var(--ink); }
 .keys-list a + a::before {
-  content: ',\00a0';
+  content: ', ';
+  display: inline;
   color: var(--mute);
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0;
   border-bottom: none;
   padding-right: 2px;
 }
-/* The JS joins with a space; the ::before adds a comma. */
-.keys-list a:not(:first-child) { margin-left: 0; }
 
 /* Generic muted text (used in empty/loading states) */
 .muted {
