@@ -1,50 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Stories Uploader</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content="0; url=https://stories.highcode.nl/" />
+  <link rel="canonical" href="https://stories.highcode.nl/" />
+  <title>Moved · stories.highcode.nl</title>
+  <style>
+    body {
+      background: #0a0a0a;
+      color: #f0ede6;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 2rem;
+      text-align: center;
+    }
+    a { color: #c8f542; }
+  </style>
 </head>
 <body>
-  <main class="container">
-    <header>
-      <h1>User Stories &rarr; Jira</h1>
-      <p class="subtitle">Drop a PDF, Word or Markdown document. Stories are extracted and pushed to the RN Jira project.</p>
-    </header>
-
-    <section id="dropzone" class="dropzone" tabindex="0" aria-label="Drop file here">
-      <input id="fileInput" type="file" accept=".pdf,.docx,.md,.markdown" hidden>
-      <div class="dropzone-inner">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="17 8 12 3 7 8"/>
-          <line x1="12" y1="3" x2="12" y2="15"/>
-        </svg>
-        <p class="dropzone-text">Drag a file here or <button type="button" class="link-btn" id="browseBtn">browse</button></p>
-        <p class="dropzone-hint">PDF, DOCX or Markdown &middot; max 10 MB</p>
-      </div>
-    </section>
-
-    <section id="status" class="status" hidden></section>
-
-    <section id="results" class="results" hidden>
-      <h2>Created</h2>
-      <div id="resultsBody"></div>
-    </section>
-
-    <section class="history">
-      <div class="history-header">
-        <h2>Recent uploads</h2>
-        <button type="button" class="link-btn" id="refreshBtn">Refresh</button>
-      </div>
-      <div id="historyBody">
-        <p class="muted">Loading history&hellip;</p>
-      </div>
-    </section>
+  <main>
+    <p>Stories has moved to <a href="https://stories.highcode.nl/">stories.highcode.nl</a>.</p>
+    <p><small>Redirecting…</small></p>
   </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.7.2/mammoth.browser.min.js"></script>
-  <script src="app.js"></script>
+  <script>
+    window.location.replace('https://stories.highcode.nl/');
+  </script>
 </body>
 </html>
