@@ -66,7 +66,7 @@ function renderHistory(rows) {
   }
   const table = document.createElement('table');
   table.innerHTML =
-    '<thead><tr><th>When</th><th>File</th><th>Status</th><th>Counts</th><th>Issues</th></tr></thead>';
+    '<thead><tr><th>When</th><th>File</th><th>Status</th><th>Counts</th><th>Issues</th><th>Source</th></tr></thead>';
   const tbody = document.createElement('tbody');
   for (const row of rows) {
     const tr = document.createElement('tr');
@@ -82,12 +82,17 @@ function renderHistory(rows) {
       .map(it => '<a href="' + (it.url || '#') + '" target="_blank" rel="noopener">' + escapeHtml(it.key) + '</a>')
       .join(' ');
 
+    const confluenceHtml = row.confluence_page_url
+      ? '<a href="' + escapeHtml(row.confluence_page_url) + '" target="_blank" rel="noopener">Confluence</a>'
+      : '<span class="muted">–</span>';
+
     tr.innerHTML =
       '<td>' + escapeHtml(when) + '</td>' +
       '<td>' + escapeHtml(row.filename || '-') + ' <span class="muted">(' + escapeHtml(row.file_type || '') + ')</span></td>' +
       '<td><span class="status-pill ' + escapeHtml(row.status || '') + '">' + escapeHtml(row.status || '') + '</span></td>' +
       '<td>' + (row.epic_count || 0) + ' / ' + (row.story_count || 0) + '<div class="muted">epics / stories</div></td>' +
-      '<td><div class="keys-list">' + keysHtml + '</div></td>';
+      '<td><div class="keys-list">' + keysHtml + '</div></td>' +
+      '<td>' + confluenceHtml + '</td>';
     tbody.appendChild(tr);
   }
   table.appendChild(tbody);
