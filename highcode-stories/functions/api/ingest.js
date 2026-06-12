@@ -17,7 +17,9 @@ export async function onRequestPost(context) {
       method: 'POST',
       headers: {
         'x-stories-secret': env.STORIES_SHARED_SECRET,
-        'content-type': contentType
+        'content-type': contentType,
+        'x-project-key': context.data.user.jira_key,
+        'x-user-email': context.data.user.email
       },
       body
     });

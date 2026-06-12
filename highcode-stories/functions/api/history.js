@@ -1,5 +1,6 @@
 export async function onRequestGet(context) {
   const { env } = context;
+  const user = context.data.user;
 
   if (!env.STORIES_SHARED_SECRET) {
     return jsonResponse({ error: 'server_misconfigured', message: 'STORIES_SHARED_SECRET not set in Pages env vars.' }, 500);
@@ -12,7 +13,11 @@ export async function onRequestGet(context) {
   try {
     upstream = await fetch(target, {
       method: 'GET',
-      headers: { 'x-stories-secret': env.STORIES_SHARED_SECRET }
+      headers: {
+        'x-stories-secret': env.STORIES_SHARED_SECRET,
+        'x-project-key': user.jira_key,
+        'x-user-email': user.email
+      }
     });
   } catch (err) {
     return jsonResponse({ error: 'upstream_unreachable', message: String(err && err.message || err) }, 502);
