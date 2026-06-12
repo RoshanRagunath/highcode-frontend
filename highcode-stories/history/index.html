@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../app/styles.css" />
 
   <style>
@@ -31,15 +31,15 @@
     }
 
     .filter-btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted-2);
-      background: transparent;
+      background: var(--card);
       border: 1px solid var(--line-strong);
-      border-radius: 2px;
-      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      padding: 0.45rem 0.95rem;
       cursor: pointer;
       transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
     }
@@ -47,37 +47,39 @@
     .filter-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .filter-btn.active {
       color: var(--accent);
-      border-color: rgba(200, 245, 66, 0.4);
-      background: rgba(200, 245, 66, 0.06);
+      border-color: rgba(47, 111, 79, 0.4);
+      background: var(--accent-soft);
     }
 
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--line);
-      border: 1px solid var(--line);
+      gap: 1.2rem;
       margin-bottom: 2.5rem;
     }
 
     .summary-cell {
       background: var(--card);
-      padding: 1.25rem 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.25rem 1.4rem;
+      box-shadow: 0 6px 20px rgba(33, 32, 29, 0.04), 0 1px 3px rgba(33, 32, 29, 0.03);
     }
 
     .summary-key {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.18em;
+      font-size: 0.64rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--muted-2);
       margin-bottom: 0.5rem;
     }
 
     .summary-val {
-      font-size: 1.8rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
+      font-family: 'Instrument Serif', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
       line-height: 1;
     }
     .summary-val.accent { color: var(--accent); }
@@ -90,17 +92,17 @@
 <body>
 
   <nav>
-    <a href="/" class="logo">High<span>Code</span> <em>/ stories</em></a>
+    <a href="/" class="logo">HighCode <em>Stories</em></a>
     <div class="nav-right">
+      <span class="nav-tag">History</span>
       <a href="/app" class="nav-link">Upload</a>
-      <span class="nav-tag">// history</span>
     </div>
   </nav>
 
   <main>
     <header class="page-header">
-      <div class="eyebrow">// HISTORY</div>
-      <h1>Every upload, every issue.</h1>
+      <div class="eyebrow">History</div>
+      <h1>Every upload, <em>every issue.</em></h1>
       <p class="lede">
         Full log of documents processed and Jira issues created.
       </p>
@@ -121,7 +123,7 @@
       </div>
       <div class="summary-cell">
         <div class="summary-key">Last run</div>
-        <div class="summary-val" id="sumLast" style="font-size: 1rem; font-family: 'DM Mono', monospace; font-weight: 400;">–</div>
+        <div class="summary-val" id="sumLast" style="font-size: 1rem; font-family: 'Figtree', sans-serif; font-weight: 500;">–</div>
       </div>
     </div>
 
