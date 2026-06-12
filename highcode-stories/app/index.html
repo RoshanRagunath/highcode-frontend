@@ -16,6 +16,7 @@
     <a href="/" class="logo">HighCode <em>Stories</em></a>
     <div class="nav-right">
       <span class="nav-tag">Upload</span>
+      <div class="nav-user" id="navUser"></div>
       <a href="/history" class="nav-link">History</a>
     </div>
   </nav>
@@ -25,9 +26,14 @@
       <div class="eyebrow">Upload</div>
       <h1>Drop a doc. <em>Get a backlog.</em></h1>
       <p class="lede">
-        PDF, Word or Markdown. Stories land in the RN Jira project.
+        PDF, Word or Markdown. Stories land in <span id="projectLede">your Jira project</span>.
       </p>
     </header>
+
+    <section id="unmappedNotice" class="notice" hidden>
+      You're signed in, but no Jira project is assigned to you yet.
+      Ask an admin to add you, then reload this page.
+    </section>
 
     <section id="dropzone" class="dropzone" tabindex="0" aria-label="Drop file here">
       <input id="fileInput" type="file" accept=".pdf,.docx,.md,.markdown" hidden />
@@ -80,6 +86,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/mammoth@1.7.2/mammoth.browser.min.js"></script>
+  <script src="user-nav.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

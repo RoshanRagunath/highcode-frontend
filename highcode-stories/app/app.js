@@ -282,4 +282,16 @@ fileInput.addEventListener('change', e => {
 });
 refreshBtn.addEventListener('click', loadHistory);
 
+window.whoami.then(user => {
+  if (!user) return;
+  const lede = document.getElementById('projectLede');
+  if (user.unmapped) {
+    document.getElementById('unmappedNotice').hidden = false;
+    dropzone.classList.add('is-busy');
+    dropzone.setAttribute('aria-disabled', 'true');
+  } else if (user.jira_key && lede) {
+    lede.innerHTML = 'the <strong>' + escapeHtml(user.jira_key) + '</strong> Jira project';
+  }
+});
+
 loadHistory();

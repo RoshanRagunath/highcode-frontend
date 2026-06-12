@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · Stories · HighCode</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../app/styles.css" />
+
+  <style>
+    main { max-width: 1100px; }
+
+    .add-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1.6rem 1.8rem;
+      box-shadow: 0 10px 30px rgba(33, 32, 29, 0.05), 0 1px 3px rgba(33, 32, 29, 0.04);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
+    }
+
+    .add-card h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.25rem;
+    }
+
+    .add-grid {
+      display: grid;
+      grid-template-columns: 2fr 1.5fr 1fr 1fr auto;
+      gap: 1rem;
+      align-items: end;
+    }
+
+    .users-section {
+      opacity: 0;
+      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.5s;
+    }
+
+    .users-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .users-tag {
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .users-header h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    td .input, td .select { padding: 0.45rem 0.65rem; font-size: 0.82rem; }
+    td .input-name { width: 100%; min-width: 8rem; }
+    .row-actions { display: flex; gap: 0.5rem; white-space: nowrap; }
+
+    .form-msg { margin-top: 1rem; font-size: 0.84rem; }
+    .form-msg.error { color: var(--error); }
+    .form-msg.ok { color: var(--success); }
+
+    @media (max-width: 900px) {
+      .add-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="logo">HighCode <em>Stories</em></a>
+    <div class="nav-right">
+      <span class="nav-tag">Admin</span>
+      <div class="nav-user" id="navUser"></div>
+      <a href="/app" class="nav-link">Upload</a>
+    </div>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <div class="eyebrow">Admin</div>
+      <h1>Who posts <em>where.</em></h1>
+      <p class="lede">
+        Cloudflare Access decides who can sign in. This page decides which Jira
+        project each person's stories land in.
+      </p>
+    </header>
+
+    <section class="add-card">
+      <h2>Add a colleague</h2>
+      <form id="addForm">
+        <div class="add-grid">
+          <div class="field">
+            <label class="field-label" for="addEmail">Email</label>
+            <input class="input" type="email" id="addEmail" placeholder="name@fizor.com" required />
+          </div>
+          <div class="field">
+            <label class="field-label" for="addName">Name</label>
+            <input class="input" type="text" id="addName" placeholder="First name" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="addKey">Jira project</label>
+            <input class="input input-key" type="text" id="addKey" placeholder="RN" required maxlength="10" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="addRole">Role</label>
+            <select class="select" id="addRole">
+              <option value="user" selected>User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="field">
+            <button type="submit" class="btn" id="addBtn">Add user</button>
+          </div>
+        </div>
+        <p class="form-msg" id="addMsg" hidden></p>
+      </form>
+    </section>
+
+    <section class="users-section">
+      <div class="users-header">
+        <span class="users-tag">Users</span>
+        <h2>Project mapping</h2>
+      </div>
+      <div id="usersBody">
+        <p class="muted">Loading users…</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>© <a href="https://highcode.nl">HighCode</a></div>
+    <div>stories.highcode.nl</div>
+  </footer>
+
+  <script src="../app/user-nav.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

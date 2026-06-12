@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account · Stories · HighCode</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../app/styles.css" />
+
+  <style>
+    .account-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1.8rem 2rem;
+      box-shadow: 0 10px 30px rgba(33, 32, 29, 0.05), 0 1px 3px rgba(33, 32, 29, 0.04);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
+    }
+    .account-card + .account-card { animation-delay: 0.5s; }
+
+    .account-card h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 1.4rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.4rem;
+    }
+    .account-card .hint {
+      font-size: 0.84rem;
+      color: var(--muted-2);
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .identity-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.88rem;
+    }
+    .identity-row:last-child { border-bottom: none; }
+    .identity-key {
+      font-size: 0.64rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      align-self: center;
+    }
+
+    .key-form { display: flex; gap: 0.85rem; align-items: end; flex-wrap: wrap; }
+
+    .form-msg { margin-top: 1rem; font-size: 0.84rem; }
+    .form-msg.error { color: var(--error); }
+    .form-msg.ok { color: var(--success); }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="logo">HighCode <em>Stories</em></a>
+    <div class="nav-right">
+      <span class="nav-tag">Account</span>
+      <div class="nav-user" id="navUser"></div>
+      <a href="/app" class="nav-link">Upload</a>
+    </div>
+  </nav>
+
+  <main>
+    <header class="page-header">
+      <div class="eyebrow">Account</div>
+      <h1>Your <em>project.</em></h1>
+      <p class="lede">
+        Where your uploaded stories land in Jira.
+      </p>
+    </header>
+
+    <section class="account-card">
+      <h2>Signed in as</h2>
+      <p class="hint">Sign-in is handled by Cloudflare Access with your work email.</p>
+      <div class="identity-row">
+        <span class="identity-key">Email</span>
+        <span id="meEmail">–</span>
+      </div>
+      <div class="identity-row">
+        <span class="identity-key">Name</span>
+        <span id="meName">–</span>
+      </div>
+      <div class="identity-row">
+        <span class="identity-key">Role</span>
+        <span id="meRole">–</span>
+      </div>
+    </section>
+
+    <section class="account-card">
+      <h2>Jira project</h2>
+      <p class="hint">
+        Every document you upload is filed as epics and stories in this project on
+        fizor.atlassian.net.
+      </p>
+      <form class="key-form" id="keyForm">
+        <div class="field">
+          <label class="field-label" for="keyInput">Project key</label>
+          <input class="input input-key" type="text" id="keyInput" maxlength="10" placeholder="RN" required />
+        </div>
+        <button type="submit" class="btn" id="keyBtn">Save</button>
+      </form>
+      <p class="form-msg" id="keyMsg" hidden></p>
+    </section>
+  </main>
+
+  <footer>
+    <div>© <a href="https://highcode.nl">HighCode</a></div>
+    <div>stories.highcode.nl</div>
+  </footer>
+
+  <script src="../app/user-nav.js"></script>
+  <script src="account.js"></script>
+</body>
+</html>
