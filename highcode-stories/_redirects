@@ -1,2 +1,4 @@
 /app    /app/    301
 /history /history/ 301
+/admin   /admin/   301
+/account /account/ 301
