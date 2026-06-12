@@ -1,0 +1,5 @@
+# Local dev only — must never reach Cloudflare Pages CI
+highcode-stories/wrangler.toml
+highcode-stories/.wrangler/
+.wrangler/
+node_modules/

@@ -37,7 +37,9 @@ window.whoami.then(user => {
   email.textContent = user.email;
   frag.appendChild(email);
 
-  if (user.role === 'admin') {
+  const here = location.pathname;
+
+  if (user.role === 'admin' && !here.startsWith('/admin')) {
     const admin = document.createElement('a');
     admin.className = 'user-link';
     admin.href = '/admin/';
@@ -45,11 +47,13 @@ window.whoami.then(user => {
     frag.appendChild(admin);
   }
 
-  const account = document.createElement('a');
-  account.className = 'user-link';
-  account.href = '/account/';
-  account.textContent = 'Account';
-  frag.appendChild(account);
+  if (!here.startsWith('/account')) {
+    const account = document.createElement('a');
+    account.className = 'user-link';
+    account.href = '/account/';
+    account.textContent = 'Account';
+    frag.appendChild(account);
+  }
 
   const logout = document.createElement('a');
   logout.className = 'user-link';

@@ -177,6 +177,10 @@ async function loadHistory() {
   historyBody.innerHTML = '<p class="muted">Loading history…</p>';
   try {
     const response = await fetch('/api/history');
+    if (response.status === 403) {
+      historyBody.innerHTML = '<p class="muted">Your uploads will show up here once a Jira project is assigned to you.</p>';
+      return;
+    }
     if (!response.ok) {
       historyBody.innerHTML = '<p class="muted">Failed to load history (HTTP ' + response.status + ').</p>';
       return;
